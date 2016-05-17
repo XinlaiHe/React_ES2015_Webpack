@@ -1,4 +1,6 @@
-let React = require('react');
-let ReactDOM = require('react-dom');
-let AppComponent = require('./commentbox.js');
-ReactDOM.render(<AppComponent />, document.getElementById('content'));
+import React from 'react';
+import ReactDOM from 'react-dom';
+import CommentBox from './commentbox.jsx';
+
+require("../styles/main.css");
+ReactDOM.render(<CommentBox />, document.getElementById('content'));
