@@ -1,13 +1,16 @@
-var path = require('path');
-var webpack = require('webpack');
+"use strict";
+
+const webpack = require('webpack');
+
 module.exports = {
-    entry: ['webpack/hot/dev-server', path.resolve(__dirname, './app/main.js')],
+    entry: './public/scripts/main.js',
     output: {
-        path: path.resolve(__dirname, './build'),
-        filename: 'bundle.js'
+        path: './public/bin',
+        filename: 'app.bundle.js',
     },
     module: {
         loaders: [
+            { test: /\.css$/, loader: "style!css" },
             {
                 test: /\.js?$/,
                 exclude: /(node_modules|bower_components)/,
@@ -18,8 +21,6 @@ module.exports = {
 
             }
         ]
-    },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin()
-    ]
-};
+    }
+
+}
