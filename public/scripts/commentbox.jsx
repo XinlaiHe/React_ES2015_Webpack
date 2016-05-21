@@ -35,7 +35,7 @@ class CommentBox extends React.Component {
             <div className="commentbox" onClick={this.handleClick.bind(this)}>
               <h1>Comments {this.state.count}</h1>
               <CommentList data={this.state.data}/>
-              <CommentForm />
+              <CommentForm url="/api/comments"/>
             </div>
           )
    }

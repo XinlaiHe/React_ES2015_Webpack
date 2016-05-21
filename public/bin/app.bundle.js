@@ -20419,7 +20419,7 @@
 	          this.state.count
 	        ),
 	        _react2.default.createElement(_commentlist2.default, { data: this.state.data }),
-	        _react2.default.createElement(_commentform2.default, null)
+	        _react2.default.createElement(_commentform2.default, { url: "/api/comments" })
 	      );
 	    }
 	  }, {
@@ -20564,6 +20564,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _jquery = __webpack_require__(172);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20578,17 +20582,59 @@
 		function CommentForm() {
 			_classCallCheck(this, CommentForm);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(CommentForm).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentForm).call(this));
+
+			_this.state = { author: '', text: '' };
+			return _this;
 		}
 
 		_createClass(CommentForm, [{
 			key: "render",
 			value: function render() {
 				return _react2.default.createElement(
-					"div",
+					"form",
 					{ className: "commentForm" },
-					"Hello, world! I am a CommentForm."
+					_react2.default.createElement("input", { type: "text", placeholder: "Your name", value: this.state.author, onChange: this.updateAuthor.bind(this) }),
+					_react2.default.createElement("input", { type: "text", placeholder: "Say something...", value: this.state.text, onChange: this.updateText.bind(this) }),
+					_react2.default.createElement(
+						"button",
+						{ onClick: this.handleSubmit.bind(this) },
+						"Post"
+					)
 				);
+			}
+		}, {
+			key: "updateText",
+			value: function updateText(e) {
+				this.setState({ text: e.target.value });
+			}
+		}, {
+			key: "updateAuthor",
+			value: function updateAuthor(e) {
+				this.setState({ author: e.target.value });
+			}
+		}, {
+			key: "handleSubmit",
+			value: function handleSubmit(e) {
+				e.preventDefault();
+
+				if (this.state.author && this.state.text) {
+					_jquery2.default.ajax({
+						url: this.props.url,
+						dataType: 'json',
+						type: "POST",
+						data: this.state,
+						cache: false,
+						success: function (data) {
+							this.setState({ author: '', text: '' });
+						}.bind(this),
+						error: function (xhr, status, err) {
+							console.error(this.props.url, status, err.toString());
+						}.bind(this)
+					});
+				} else {
+					return;
+				}
 			}
 		}]);
 
