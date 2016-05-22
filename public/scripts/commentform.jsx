@@ -22,28 +22,15 @@ class CommentForm extends React.Component{
 	updateAuthor(e) {
 		this.setState({author: e.target.value});
 	}
-	handleSubmit(e) {
+	handleSubmit(e){
 		e.preventDefault();
-		
 		if(this.state.author && this.state.text){
-			$.ajax({
-		      url: this.props.url,
-		      dataType: 'json',
-		      type: "POST",
-		      data: this.state,
-		      cache: false,
-		      success: function(data) {
-		        this.setState({author: '', text: ''});
-		      }.bind(this),
-		      error: function(xhr, status, err) {
-		        console.error(this.props.url, status, err.toString());
-		      }.bind(this)
-		    });
+			this.props.submitForm(this.state.author, this.state.text);
+			this.setState({author: '', text: ''});
 		}else{
 			return;
 		}
 	}
-
 }
 	
 export default CommentForm

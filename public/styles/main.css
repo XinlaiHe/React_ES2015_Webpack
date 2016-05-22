@@ -1,5 +1,16 @@
 .commentbox{
   margin: 0 auto;
   color: blue;
-  width:35%;
+  width:60%;
+}
+.commentAuthor *{
+	margin-left:20px;
+}
+.commentAuthor b{
+	color:grey;
+	font-size:8pt;
+}
+.commentAuthor button{
+	color:green;
+	font-size:8pt;
 }

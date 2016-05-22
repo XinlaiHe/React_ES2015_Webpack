@@ -20356,11 +20356,11 @@
 
 	var _commentlist2 = _interopRequireDefault(_commentlist);
 
-	var _commentform = __webpack_require__(171);
+	var _commentform = __webpack_require__(172);
 
 	var _commentform2 = _interopRequireDefault(_commentform);
 
-	var _jquery = __webpack_require__(172);
+	var _jquery = __webpack_require__(171);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -20380,7 +20380,7 @@
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentBox).call(this));
 
-	    _this.state = { count: 0, data: [] };
+	    _this.state = { data: [] };
 	    return _this;
 	  }
 
@@ -20411,21 +20411,51 @@
 
 	      return _react2.default.createElement(
 	        "div",
-	        { className: "commentbox", onClick: this.handleClick.bind(this) },
+	        { className: "commentbox" },
 	        _react2.default.createElement(
 	          "h1",
 	          null,
 	          "Comments ",
-	          this.state.count
+	          this.state.data.length
 	        ),
-	        _react2.default.createElement(_commentlist2.default, { data: this.state.data }),
-	        _react2.default.createElement(_commentform2.default, { url: "/api/comments" })
+	        _react2.default.createElement(_commentlist2.default, { data: this.state.data, deleteComment: this.deleteComment.bind(this) }),
+	        _react2.default.createElement(_commentform2.default, { submitForm: this.handleSubmitForm.bind(this) })
 	      );
 	    }
 	  }, {
-	    key: "handleClick",
-	    value: function handleClick() {
-	      this.setState({ state: this.state.count++ });
+	    key: "handleSubmitForm",
+	    value: function handleSubmitForm(author, text) {
+
+	      _jquery2.default.ajax({
+	        url: this.props.url,
+	        dataType: 'json',
+	        type: "POST",
+	        data: { author: author, text: text },
+	        cache: false,
+	        success: function (data) {
+	          this.setState({ data: data });
+	        }.bind(this),
+	        error: function (xhr, status, err) {
+	          console.error(this.props.url, status, err.toString());
+	        }.bind(this)
+	      });
+	    }
+	  }, {
+	    key: "deleteComment",
+	    value: function deleteComment(id) {
+
+	      _jquery2.default.ajax({
+	        url: this.props.url + "/" + id,
+	        dataType: 'json',
+	        type: "DELETE",
+	        cache: false,
+	        success: function (data) {
+	          this.setState({ data: data });
+	        }.bind(this),
+	        error: function (xhr, status, err) {
+	          console.error(this.props.url, status, err.toString());
+	        }.bind(this)
+	      });
 	    }
 	  }]);
 
@@ -20477,15 +20507,20 @@
 				var comments = this.props.data.map(function (comment) {
 					return _react2.default.createElement(
 						_comment2.default,
-						{ author: comment.author, key: comment.id },
+						{ author: comment.author, id: comment.id, deleteComment: this.deleteComment.bind(this) },
 						comment.text
 					);
-				});
+				}.bind(this));
 				return _react2.default.createElement(
 					"div",
 					{ className: "commentList" },
 					comments
 				);
+			}
+		}, {
+			key: "deleteComment",
+			value: function deleteComment(id) {
+				this.props.deleteComment(id);
 			}
 		}]);
 
@@ -20509,6 +20544,10 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _jquery = __webpack_require__(171);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20536,10 +20575,29 @@
 					_react2.default.createElement(
 						"h2",
 						{ className: "commentAuthor" },
-						this.props.author
-					),
-					this.props.children
+						this.props.author,
+						_react2.default.createElement(
+							"b",
+							null,
+							this.props.children
+						),
+						_react2.default.createElement(
+							"button",
+							null,
+							"Edit"
+						),
+						_react2.default.createElement(
+							"button",
+							{ onClick: this.deleteComment.bind(this, this.props.id) },
+							"Delete"
+						)
+					)
 				);
+			}
+		}, {
+			key: "deleteComment",
+			value: function deleteComment(id) {
+				this.props.deleteComment(id);
 			}
 		}]);
 
@@ -20550,101 +20608,6 @@
 
 /***/ },
 /* 171 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _jquery = __webpack_require__(172);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var CommentForm = function (_React$Component) {
-		_inherits(CommentForm, _React$Component);
-
-		function CommentForm() {
-			_classCallCheck(this, CommentForm);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentForm).call(this));
-
-			_this.state = { author: '', text: '' };
-			return _this;
-		}
-
-		_createClass(CommentForm, [{
-			key: "render",
-			value: function render() {
-				return _react2.default.createElement(
-					"form",
-					{ className: "commentForm" },
-					_react2.default.createElement("input", { type: "text", placeholder: "Your name", value: this.state.author, onChange: this.updateAuthor.bind(this) }),
-					_react2.default.createElement("input", { type: "text", placeholder: "Say something...", value: this.state.text, onChange: this.updateText.bind(this) }),
-					_react2.default.createElement(
-						"button",
-						{ onClick: this.handleSubmit.bind(this) },
-						"Post"
-					)
-				);
-			}
-		}, {
-			key: "updateText",
-			value: function updateText(e) {
-				this.setState({ text: e.target.value });
-			}
-		}, {
-			key: "updateAuthor",
-			value: function updateAuthor(e) {
-				this.setState({ author: e.target.value });
-			}
-		}, {
-			key: "handleSubmit",
-			value: function handleSubmit(e) {
-				e.preventDefault();
-
-				if (this.state.author && this.state.text) {
-					_jquery2.default.ajax({
-						url: this.props.url,
-						dataType: 'json',
-						type: "POST",
-						data: this.state,
-						cache: false,
-						success: function (data) {
-							this.setState({ author: '', text: '' });
-						}.bind(this),
-						error: function (xhr, status, err) {
-							console.error(this.props.url, status, err.toString());
-						}.bind(this)
-					});
-				} else {
-					return;
-				}
-			}
-		}]);
-
-		return CommentForm;
-	}(_react2.default.Component);
-
-	exports.default = CommentForm;
-
-/***/ },
-/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -30464,6 +30427,89 @@
 
 
 /***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _jquery = __webpack_require__(171);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var CommentForm = function (_React$Component) {
+		_inherits(CommentForm, _React$Component);
+
+		function CommentForm() {
+			_classCallCheck(this, CommentForm);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentForm).call(this));
+
+			_this.state = { author: '', text: '' };
+			return _this;
+		}
+
+		_createClass(CommentForm, [{
+			key: "render",
+			value: function render() {
+				return _react2.default.createElement(
+					"form",
+					{ className: "commentForm" },
+					_react2.default.createElement("input", { type: "text", placeholder: "Your name", value: this.state.author, onChange: this.updateAuthor.bind(this) }),
+					_react2.default.createElement("input", { type: "text", placeholder: "Say something...", value: this.state.text, onChange: this.updateText.bind(this) }),
+					_react2.default.createElement(
+						"button",
+						{ onClick: this.handleSubmit.bind(this) },
+						"Post"
+					)
+				);
+			}
+		}, {
+			key: "updateText",
+			value: function updateText(e) {
+				this.setState({ text: e.target.value });
+			}
+		}, {
+			key: "updateAuthor",
+			value: function updateAuthor(e) {
+				this.setState({ author: e.target.value });
+			}
+		}, {
+			key: "handleSubmit",
+			value: function handleSubmit(e) {
+				e.preventDefault();
+				if (this.state.author && this.state.text) {
+					this.props.submitForm(this.state.author, this.state.text);
+					this.setState({ author: '', text: '' });
+				} else {
+					return;
+				}
+			}
+		}]);
+
+		return CommentForm;
+	}(_react2.default.Component);
+
+	exports.default = CommentForm;
+
+/***/ },
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -30498,7 +30544,7 @@
 
 
 	// module
-	exports.push([module.id, ".commentbox{\n  margin: 0 auto;\n  color: blue;\n  width:35%;\n}", ""]);
+	exports.push([module.id, ".commentbox{\n  margin: 0 auto;\n  color: blue;\n  width:60%;\n}\n.commentAuthor *{\n\tmargin-left:20px;\n}\n.commentAuthor b{\n\tcolor:grey;\n\tfont-size:8pt;\n}\n.commentAuthor button{\n\tcolor:green;\n\tfont-size:8pt;\n}", ""]);
 
 	// exports
 

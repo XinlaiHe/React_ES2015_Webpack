@@ -8,7 +8,7 @@ class CommentBox extends React.Component {
 
   constructor(){
     super();
-    this.state = { count : 0, data : [] };
+    this.state = { data : [] };
   }
 
   loadCommentsFromServer() {
@@ -32,15 +32,44 @@ class CommentBox extends React.Component {
   render() {
 
    return (
-            <div className="commentbox" onClick={this.handleClick.bind(this)}>
-              <h1>Comments {this.state.count}</h1>
-              <CommentList data={this.state.data}/>
-              <CommentForm url="/api/comments"/>
+            <div className="commentbox">
+              <h1>Comments {this.state.data.length}</h1>
+              <CommentList data={this.state.data} deleteComment={this.deleteComment.bind(this)}/>
+              <CommentForm submitForm={this.handleSubmitForm.bind(this)}/>
             </div>
           )
    }
-   handleClick() {
-    this.setState({state : this.state.count++});
+
+   handleSubmitForm(author, text) {
+      
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            type: "POST",
+            data: {author : author, text : text},
+            cache: false,
+            success: function(data) {
+              this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+   }
+   deleteComment(id) {
+
+      $.ajax({
+            url: this.props.url + "/" + id,
+            dataType: 'json',
+            type: "DELETE",
+            cache: false,
+            success: function(data) {
+              this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
    }
 }
 

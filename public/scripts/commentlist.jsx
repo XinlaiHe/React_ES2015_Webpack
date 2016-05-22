@@ -6,16 +6,19 @@ class CommentList extends React.Component{
 	render() {
 		let comments = this.props.data.map(function(comment){
 			return (
-					<Comment author={comment.author} key={comment.id}>
+					<Comment author={comment.author} id={comment.id} deleteComment={this.deleteComment.bind(this)}>
 						{comment.text}
 					</Comment>
 				   );
-		})
+		}.bind(this));
 		return (
 				<div className="commentList">
 			       {comments}
 			    </div>
 			   );
+	}
+	deleteComment(id) {
+		this.props.deleteComment(id);
 	}
 }
 

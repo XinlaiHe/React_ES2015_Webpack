@@ -1,10 +1,5 @@
 [
     {
-        "id": 1,
-        "author": "Pete Hunt",
-        "text": "This is one comment"
-    },
-    {
         "id": 2,
         "author": "Jordan Walke",
         "text": "This is *another* comment"
@@ -18,5 +13,10 @@
         "id": 1463839990598,
         "author": "hexinlai1",
         "text": "world"
+    },
+    {
+        "id": 1463891924553,
+        "author": "hexinlai2",
+        "text": "1991923"
     }
 ]
