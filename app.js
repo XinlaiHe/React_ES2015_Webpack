@@ -99,3 +99,30 @@ app.delete('/api/comments/:id', function(req, res) {
     });
   });
 });
+app.put('/api/comments/:id', function(req, res) {
+  var id = req.params.id;
+  var text = req.body.text;
+  fs.readFile(COMMENTS_FILE, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    var comments = JSON.parse(data);
+    // NOTE: In a real implementation, we would likely rely on a database or
+    // some other approach (e.g. UUIDs) to ensure a globally unique id. We'll
+    // treat Date.now() as unique-enough for our purposes.
+    comments.forEach(function(comment){
+      if(comment.id == id){
+        var index = comments.indexOf(comment);
+        comments[index].text = text
+      }
+    });
+    fs.writeFile(COMMENTS_FILE, JSON.stringify(comments, null, 4), function(err) {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+      res.json(comments);
+    });
+  });
+});

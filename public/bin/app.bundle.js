@@ -20418,7 +20418,7 @@
 	          "Comments ",
 	          this.state.data.length
 	        ),
-	        _react2.default.createElement(_commentlist2.default, { data: this.state.data, deleteComment: this.deleteComment.bind(this) }),
+	        _react2.default.createElement(_commentlist2.default, { data: this.state.data, deleteComment: this.deleteComment.bind(this), updateComment: this.updateComment.bind(this) }),
 	        _react2.default.createElement(_commentform2.default, { submitForm: this.handleSubmitForm.bind(this) })
 	      );
 	    }
@@ -20448,6 +20448,24 @@
 	        url: this.props.url + "/" + id,
 	        dataType: 'json',
 	        type: "DELETE",
+	        cache: false,
+	        success: function (data) {
+	          this.setState({ data: data });
+	        }.bind(this),
+	        error: function (xhr, status, err) {
+	          console.error(this.props.url, status, err.toString());
+	        }.bind(this)
+	      });
+	    }
+	  }, {
+	    key: "updateComment",
+	    value: function updateComment(id, text) {
+
+	      _jquery2.default.ajax({
+	        url: this.props.url + "/" + id,
+	        dataType: 'json',
+	        type: "PUT",
+	        data: { text: text },
 	        cache: false,
 	        success: function (data) {
 	          this.setState({ data: data });
@@ -20507,7 +20525,7 @@
 				var comments = this.props.data.map(function (comment) {
 					return _react2.default.createElement(
 						_comment2.default,
-						{ author: comment.author, id: comment.id, deleteComment: this.deleteComment.bind(this) },
+						{ author: comment.author, id: comment.id, deleteComment: this.deleteComment.bind(this), updateComment: this.updateComment.bind(this) },
 						comment.text
 					);
 				}.bind(this));
@@ -20520,7 +20538,14 @@
 		}, {
 			key: "deleteComment",
 			value: function deleteComment(id) {
+
 				this.props.deleteComment(id);
+			}
+		}, {
+			key: "updateComment",
+			value: function updateComment(id, text) {
+
+				this.props.updateComment(id, text);
 			}
 		}]);
 
@@ -20563,12 +20588,17 @@
 		function Comment() {
 			_classCallCheck(this, Comment);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Comment).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Comment).call(this));
+
+			_this.state = { editing: false, text: "" };
+			return _this;
 		}
 
 		_createClass(Comment, [{
 			key: "render",
 			value: function render() {
+				var _this2 = this;
+
 				return _react2.default.createElement(
 					"div",
 					{ className: "comment" },
@@ -20576,28 +20606,77 @@
 						"h2",
 						{ className: "commentAuthor" },
 						this.props.author,
-						_react2.default.createElement(
-							"b",
-							null,
-							this.props.children
-						),
-						_react2.default.createElement(
-							"button",
-							null,
-							"Edit"
-						),
-						_react2.default.createElement(
-							"button",
-							{ onClick: this.deleteComment.bind(this, this.props.id) },
-							"Delete"
-						)
+						function () {
+							if (!_this2.state.editing) {
+								return _react2.default.createElement(
+									"div",
+									null,
+									_react2.default.createElement(
+										"b",
+										null,
+										_this2.props.children
+									),
+									_react2.default.createElement(
+										"button",
+										{ onClick: _this2.changeToEditing.bind(_this2) },
+										"Edit"
+									),
+									_react2.default.createElement(
+										"button",
+										{ onClick: _this2.deleteComment.bind(_this2, _this2.props.id) },
+										"Delete"
+									)
+								);
+							} else {
+								return _react2.default.createElement(
+									"div",
+									null,
+									_react2.default.createElement("input", { value: _this2.state.text, onChange: _this2.updateText.bind(_this2) }),
+									_react2.default.createElement(
+										"button",
+										{ onClick: _this2.update.bind(_this2) },
+										"Update"
+									),
+									_react2.default.createElement(
+										"button",
+										{ onClick: _this2.changeToNoEditing.bind(_this2) },
+										"Cancel"
+									)
+								);
+							}
+						}()
 					)
 				);
 			}
 		}, {
 			key: "deleteComment",
 			value: function deleteComment(id) {
+
 				this.props.deleteComment(id);
+			}
+		}, {
+			key: "changeToEditing",
+			value: function changeToEditing() {
+
+				this.setState({ editing: true, text: this.props.children });
+			}
+		}, {
+			key: "changeToNoEditing",
+			value: function changeToNoEditing() {
+
+				this.setState({ editing: false, text: "" });
+			}
+		}, {
+			key: "update",
+			value: function update() {
+
+				this.props.updateComment(this.props.id, this.state.text);
+				this.setState({ editing: false, text: "" });
+			}
+		}, {
+			key: "updateText",
+			value: function updateText(e) {
+				this.setState({ text: e.target.value });
 			}
 		}]);
 

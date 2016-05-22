@@ -34,7 +34,7 @@ class CommentBox extends React.Component {
    return (
             <div className="commentbox">
               <h1>Comments {this.state.data.length}</h1>
-              <CommentList data={this.state.data} deleteComment={this.deleteComment.bind(this)}/>
+              <CommentList data={this.state.data} deleteComment={this.deleteComment.bind(this)} updateComment={this.updateComment.bind(this)}/>
               <CommentForm submitForm={this.handleSubmitForm.bind(this)}/>
             </div>
           )
@@ -62,6 +62,22 @@ class CommentBox extends React.Component {
             url: this.props.url + "/" + id,
             dataType: 'json',
             type: "DELETE",
+            cache: false,
+            success: function(data) {
+              this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+   }
+   updateComment(id, text){
+
+      $.ajax({
+            url: this.props.url + "/" + id,
+            dataType: 'json',
+            type: "PUT",
+            data : {text : text},
             cache: false,
             success: function(data) {
               this.setState({data: data});
