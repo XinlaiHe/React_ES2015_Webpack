@@ -22,5 +22,14 @@
     "react-dom": "^15.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-concurrent": "^2.3.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-nodemon": "^0.4.2",
+    "grunt-webpack": "^1.0.11",
+    "open": "0.0.5",
+    "webpack-dev-server": "^1.14.1"
   }
 }
