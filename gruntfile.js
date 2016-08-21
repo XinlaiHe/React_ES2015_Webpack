@@ -3,12 +3,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    karma: {
-            unit: {
-                configFile: 'karma.config.js',
-                autoWatch: true
-            }
-    },
+    
     watch: {
       scripts: {
         files: ['./public/scripts/*.jsx', './public/styles/*.css'],
@@ -100,10 +95,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-concurrent');
   grunt.loadNpmTasks('grunt-nodemon');
   grunt.loadNpmTasks('grunt-webpack');
-  grunt.loadNpmTasks('grunt-karma');
 
   // 默认被执行的任务列表。
   grunt.registerTask('default', ['webpack', 'concurrent:target']);
-  grunt.registerTask('test', ['karma']);
 
 };
