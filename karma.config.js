@@ -1,8 +1,10 @@
+var webpack = require('webpack');
+
 module.exports = function(config) {
     config.set({
  
         // base path, that will be used to resolve files and exclude
-        basePath: './',
+        basePath: '',
  
         // frameworks to use
         frameworks: ['jasmine'],
@@ -15,10 +17,46 @@ module.exports = function(config) {
         // list of files to exclude
         exclude: [
         ],
- 
+
+        //prepocessors
+        prepocessors: {
+            'tests/*.test.js' : ['webpack']
+        },
+        
+        //webpack
+        webpack:  {
+            module: {
+                loaders: [
+                    { test: /\.css$/, loader: "style!css" },
+                    {
+                        test: /\.jsx?$/,
+                        exclude: /(node_modules|bower_components)/,
+                        loader: 'babel',
+                        query: {
+                            presets: ['es2015', 'react']
+                        }
+
+                    }
+                ]
+            }
+        },
+
+        //webpack middleware
+        webpackMiddlware: {
+            stats: {
+                colors: true
+            },
+            quite: true
+        },
+
         // test results reporter to use
         reporters: ['progress'],
- 
+    
+        // coverageReporter: {
+        //     type: 'html',
+        //     dir: 'coverage/'
+        // },
+
         // web server port
         port: 9876,
  
@@ -39,6 +77,13 @@ module.exports = function(config) {
  
         // Continuous Integration mode
         // if true, it capture browsers, run tests and exit
-        singleRun: false
+        singleRun: false,
+
+        plugins: [
+            require('karma-webpack'),
+            require('karma-jasmine'),
+            require('karma-spec-reporter'),
+            require('karma-phantomjs-launcher')
+        ]
     });
 };

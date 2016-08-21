@@ -5,7 +5,8 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     karma: {
             unit: {
-                configFile: 'karma.config.js'
+                configFile: 'karma.config.js',
+                autoWatch: true
             }
     },
     watch: {
